@@ -2,7 +2,6 @@ package ru.kubzay.restgatewayapi.services;
 
 import ru.kubzay.restgatewayapi.model.User;
 import ru.kubzay.restgatewayapi.resources.UserRepository;
-import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
@@ -11,7 +10,6 @@ import org.springframework.stereotype.Service;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Objects;
-import java.util.Set;
 
 @Service
 public class UserService implements UserDetailsService {

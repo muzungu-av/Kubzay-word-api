@@ -21,11 +21,11 @@ import java.util.Map;
 
 public class JwtCsrfFilter extends OncePerRequestFilter {
 
-    private static String api;
+    private String api;
 
-    private static String auth;
+    private String auth;
 
-    private static String login;
+    private String login;
 
     private final CsrfTokenRepository tokenRepository;
 
@@ -38,18 +38,12 @@ public class JwtCsrfFilter extends OncePerRequestFilter {
         Map<String, String> pair = propsreader
                 .setSourcePropFile("application.properties")
                 .readValueByKey("paths.api")
-                .readValueByKey("paths.login")
-                .setSourcePropFile("db.properties")
-                .readValueByKey("exp.on")
-                .setSourcePropFile("application.properties")
                 .readValueByKey("paths.auth")
+                .readValueByKey("paths.login")
                 .get();
-
-        api = pair.get("paths.api");
-        auth = pair.get("paths.auth");
-        login = pair.get("paths.login");
-
-        System.out.println(pair.toString());
+        this.api = pair.get("paths.api");
+        this.auth = pair.get("paths.auth");
+        this.login = pair.get("paths.login");
         pair.clear();
     }
 
@@ -64,18 +58,15 @@ public class JwtCsrfFilter extends OncePerRequestFilter {
                 csrfToken = this.tokenRepository.generateToken(request);
                 this.tokenRepository.saveToken(csrfToken, request, response);
             } catch (RuntimeException e) {
-                /* если какая-либо ошибка , например, JwtTokenRepository (нет jwt.secret)
-                   тут отлавливаем и останавливаем */
+                /* если какая-либо ошибка , например, JwtTokenRepository (нет jwt.secret) тут отлавливаем */
                 this.logger.error("Ошибка во время работы tokenRepository, подробнее: " + e.getMessage()); //<- подробности логируем
                 resolver.resolveException(request, response, null, new IllegalArgumentException("Server Error")); //<-это сообщение наружу
                 return;
             }
         }
-
         request.setAttribute(CsrfToken.class.getName(), csrfToken);
         request.setAttribute(csrfToken.getParameterName(), csrfToken);
-        String as = api + auth + login;
-        if (request.getServletPath().equals(api + auth + login)) {
+        if (request.getServletPath().equals(this.api + this.auth + this.login)) {
             try {
                 filterChain.doFilter(request, response);
             } catch (Exception e) {
