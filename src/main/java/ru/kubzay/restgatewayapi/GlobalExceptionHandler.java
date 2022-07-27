@@ -27,14 +27,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
             MissingCsrfTokenException.class,
             InvalidCsrfTokenException.class,
             SessionAuthenticationException.class})
-    public ErrorInfo handleAuthenticationException(RuntimeException ex, HttpServletRequest request, HttpServletResponse response){
+    public ErrorInfo handleAuthenticationException(RuntimeException ex, HttpServletRequest request, HttpServletResponse response) {
         this.tokenRepository.clearToken(response);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
         return new ErrorInfo(UrlUtils.buildFullRequestUrl(request), "error.authorization");
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
-    public ErrorInfo handleServerLogicException(RuntimeException ex, HttpServletRequest request, HttpServletResponse response){
+    public ErrorInfo handleServerLogicException(RuntimeException ex, HttpServletRequest request, HttpServletResponse response) {
         this.tokenRepository.clearToken(response);
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
         return new ErrorInfo(UrlUtils.buildFullRequestUrl(request), "error.serverlogic");

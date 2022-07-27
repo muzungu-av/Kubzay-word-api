@@ -39,7 +39,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     /* нестандартное поведение Idea так что пока отдельно инжектится, для тестов может потребоваться пенести в конструктор
      * а без него вываливается весь стейтрейс в ответе */
     @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") //<- подавление сообщения "cannot resolve bean..."
-    @Resource(name="handlerExceptionResolver")
+    @Resource(name = "handlerExceptionResolver")
     private HandlerExceptionResolver resolver;
 
     @Autowired

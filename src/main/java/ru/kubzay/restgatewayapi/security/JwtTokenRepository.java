@@ -41,7 +41,7 @@ public class JwtTokenRepository implements CsrfTokenRepository {
     }
 
     @Override
-    public CsrfToken generateToken(HttpServletRequest httpServletRequest) throws IllegalArgumentException{
+    public CsrfToken generateToken(HttpServletRequest httpServletRequest) throws IllegalArgumentException {
         String id = UUID.randomUUID().toString().replace("-", "");
         Date now = new Date();
         Date exp = Date.from(LocalDateTime.now().plusMinutes(30)
@@ -62,20 +62,22 @@ public class JwtTokenRepository implements CsrfTokenRepository {
         }
         if (token != null && !token.isEmpty()) {
             return new DefaultCsrfToken("x-csrf-token", "_csrf", token);
-        } else
+        } else {
             throw new IllegalArgumentException("TOKEN IS EMPTY");
+        }
     }
 
     @Override
     public void saveToken(CsrfToken csrfToken, HttpServletRequest request, HttpServletResponse response) {
         if (Objects.nonNull(csrfToken)) {
-            if (!response.getHeaderNames().contains(ACCESS_CONTROL_EXPOSE_HEADERS))
+            if (!response.getHeaderNames().contains(ACCESS_CONTROL_EXPOSE_HEADERS)) {
                 response.addHeader(ACCESS_CONTROL_EXPOSE_HEADERS, csrfToken.getHeaderName());
-
-            if (response.getHeaderNames().contains(csrfToken.getHeaderName()))
+            }
+            if (response.getHeaderNames().contains(csrfToken.getHeaderName())) {
                 response.setHeader(csrfToken.getHeaderName(), csrfToken.getToken());
-            else
+            } else {
                 response.addHeader(csrfToken.getHeaderName(), csrfToken.getToken());
+            }
         }
     }
 
@@ -85,7 +87,8 @@ public class JwtTokenRepository implements CsrfTokenRepository {
     }
 
     public void clearToken(HttpServletResponse response) {
-        if (response.getHeaderNames().contains("x-csrf-token"))
+        if (response.getHeaderNames().contains("x-csrf-token")) {
             response.setHeader("x-csrf-token", "");
+        }
     }
 }
