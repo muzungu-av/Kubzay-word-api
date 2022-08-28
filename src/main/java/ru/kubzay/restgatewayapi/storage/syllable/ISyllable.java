@@ -5,7 +5,7 @@ package ru.kubzay.restgatewayapi.storage.syllable;
  * Слог - состоит из одной или двух букв,
  * помещеных в визуальный квадрат на фронте.
  */
-public interface ISyllable {
+public interface ISyllable extends Comparable<ISyllable> {
     /* русское символьное написание */
     String getSymbol();
     /* номер позиции (индекс) в колонке «Твердые» (или «Мягкие») */

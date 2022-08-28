@@ -9,7 +9,7 @@ import org.springframework.context.ApplicationContextAware;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 @SpringBootTest
-class SyllableStorageTests implements ApplicationContextAware {
+class SyllableStorageSingletonTests implements ApplicationContextAware {
 
     private ApplicationContext context;
 

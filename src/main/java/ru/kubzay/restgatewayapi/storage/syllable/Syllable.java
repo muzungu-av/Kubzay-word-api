@@ -69,4 +69,17 @@ public class Syllable implements ISyllable {
     public int hashCode() {
         return Objects.hash(symbol.getString());
     }
+
+    /**
+     * Сортировка слогов из таблицы зайцева.
+     * Сортирует по Global Syllable Index
+     * Не менять порядок вычитаемых ! тк. это скажется на алгоритме парсинга слов на слоги.
+     *
+     * @param o ISyllable
+     * @return int
+     */
+    @Override
+    public int compareTo(ISyllable o) {
+        return this.globalSyllableIndex - o.getGlobalSyllableIndex();
+    }
 }
