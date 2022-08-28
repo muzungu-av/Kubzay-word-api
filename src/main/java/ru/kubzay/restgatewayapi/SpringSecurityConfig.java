@@ -1,6 +1,8 @@
 package ru.kubzay.restgatewayapi;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.http.HttpMethod;
+import org.springframework.security.config.annotation.web.builders.WebSecurity;
 import ru.kubzay.restgatewayapi.security.JwtCsrfFilter;
 import ru.kubzay.restgatewayapi.security.JwtTokenRepository;
 import ru.kubzay.restgatewayapi.services.UserService;
@@ -38,7 +40,8 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
 
     /* нестандартное поведение Idea так что пока отдельно инжектится, для тестов может потребоваться пенести в конструктор
      * а без него вываливается весь стейтрейс в ответе */
-    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection") //<- подавление сообщения "cannot resolve bean..."
+    @SuppressWarnings("SpringJavaInjectionPointsAutowiringInspection")
+    //<- подавление сообщения "cannot resolve bean..."
     @Resource(name = "handlerExceptionResolver")
     private HandlerExceptionResolver resolver;
 
@@ -63,8 +66,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 .csrf().ignoringAntMatchers("/**")
                 .and()
                 .authorizeRequests()
-                .antMatchers(api + auth + login)
-                .authenticated()
+                // раскоментировать для включения полноценной (не по токену) авторизации, однако токен по-прежнему будет необходим
+//                .antMatchers( "/private/**").fullyAuthenticated()
+                .antMatchers(api + auth + login).authenticated()
                 .and()
                 .httpBasic()
                 .authenticationEntryPoint(((request, response, e) -> resolver.resolveException(request, response, null, e)));
@@ -73,5 +77,24 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
         auth.userDetailsService(this.service);
+    }
+
+    /**
+     * Публичные ресурсы должны быть доступны, JwtCsrfFilter не будет блокировать их.
+     * Для этого такие ресурсы нужно добавить WebSecurity.ignoring()
+     * <p>
+     * Сюда добавляем корневой ресурс где находиться корневая страница.
+     * <p>
+     * смотри https://github.com/spring-projects/spring-security/issues/4368
+     * < KevinWingi commented on 8 Jun 2019) >
+     */
+    @Override
+    public void configure(WebSecurity web) throws Exception {
+        web
+                .ignoring()
+                .antMatchers(HttpMethod.GET, "/")
+                .antMatchers(HttpMethod.GET, "/index.html")
+                .antMatchers(HttpMethod.GET, "/public/**")
+                .antMatchers(HttpMethod.GET, "/static/**");
     }
 }

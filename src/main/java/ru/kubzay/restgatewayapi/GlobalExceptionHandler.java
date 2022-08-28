@@ -30,14 +30,14 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
     public ErrorInfo handleAuthenticationException(RuntimeException ex, HttpServletRequest request, HttpServletResponse response) {
         this.tokenRepository.clearToken(response);
         response.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
-        return new ErrorInfo(UrlUtils.buildFullRequestUrl(request), "error.authorization");
+        return new ErrorInfo(UrlUtils.buildFullRequestUrl(request), "error.access");
     }
 
     @ExceptionHandler({IllegalArgumentException.class})
     public ErrorInfo handleServerLogicException(RuntimeException ex, HttpServletRequest request, HttpServletResponse response) {
         this.tokenRepository.clearToken(response);
         response.setStatus(HttpServletResponse.SC_INTERNAL_SERVER_ERROR);
-        return new ErrorInfo(UrlUtils.buildFullRequestUrl(request), "error.serverlogic");
+        return new ErrorInfo(UrlUtils.buildFullRequestUrl(request), "error.logic");
     }
 
     @Getter

@@ -37,6 +37,7 @@ public class JwtCsrfFilter extends OncePerRequestFilter {
         MultyResourcePropertiesReader propsreader = new MultyResourcePropertiesReader();
         Map<String, String> pair = propsreader
                 .setSourcePropFile("application.properties")
+                //todo readValueByKey передавать ссылку this.key и убрать 'pair' и get()
                 .readValueByKey("paths.api")
                 .readValueByKey("paths.auth")
                 .readValueByKey("paths.login")
@@ -85,6 +86,8 @@ public class JwtCsrfFilter extends OncePerRequestFilter {
 
                     filterChain.doFilter(request, response);
                 } else {
+                    /* если убрать configure(WebSecurity web) метод в SpringSecurityConfig
+                    * тогда тут будет ловиться исключение при попытки посетить публичные адреса без аутентификации */
                     resolver.resolveException(request, response, null, new InvalidCsrfTokenException(csrfToken, actualToken));
                 }
             } catch (JwtException e) {

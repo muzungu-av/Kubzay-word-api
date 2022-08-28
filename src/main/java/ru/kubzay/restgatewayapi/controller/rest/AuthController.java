@@ -1,4 +1,4 @@
-package ru.kubzay.restgatewayapi.rest;
+package ru.kubzay.restgatewayapi.controller.rest;
 
 import ru.kubzay.restgatewayapi.services.UserService;
 import org.springframework.http.MediaType;
