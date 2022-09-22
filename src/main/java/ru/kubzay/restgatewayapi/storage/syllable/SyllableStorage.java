@@ -10,7 +10,9 @@ import java.util.Map;
 
 
 /**
- * Хранилище слогов. Синглтон.
+ * Хранилище слогов. Синглтон. Запускать в отдельном контейнере для одного преподователя и ученика!
+ * Это из-за итератора который , когда предоставляется использующему его сервису, должен быть сброшен.
+ *
  * <p>
  * Хранит все возможные разновидности сочетаний слогов-букв русского языка.
  * За основу взяты таблицы методики Зайцева.
@@ -106,7 +108,8 @@ class SyllableStorage {
     }
 
     /**
-     * предоставляет итератор для гласных.
+     * Предоставляет итератор для гласных.
+     * Сбрасывает итератор.
      *
      * @return SyllableStorageIterator<ISyllable>
      */
@@ -114,7 +117,7 @@ class SyllableStorage {
         if (this.vowelsIterator == null) {
             throw new NullPointerException("Итератор (VowelsIterator) не был проинициализирован.");
         }
-        this.vowelsIterator.restartIteration(); //важно!
+        this.vowelsIterator.restartIteration(); //важно! каждая итерация слогов начинается сначала.
         return this.vowelsIterator;
     }
 
