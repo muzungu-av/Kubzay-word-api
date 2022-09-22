@@ -15,7 +15,7 @@
     <name>Kubzay Rest Gateway API Server</name>
     <description>Gateway Rest Server for Kubzay</description>
     <properties>
-        <java.version>12</java.version>
+        <java.version>17</java.version>
     </properties>
 
     <dependencies>
