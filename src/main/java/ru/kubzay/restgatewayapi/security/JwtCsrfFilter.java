@@ -27,6 +27,8 @@ public class JwtCsrfFilter extends OncePerRequestFilter {
 
     private String login;
 
+    private String word;
+
     private final CsrfTokenRepository tokenRepository;
 
     private final HandlerExceptionResolver resolver;
@@ -41,10 +43,12 @@ public class JwtCsrfFilter extends OncePerRequestFilter {
                 .readValueByKey("paths.api")
                 .readValueByKey("paths.auth")
                 .readValueByKey("paths.login")
+                .readValueByKey("paths.word")
                 .get();
         this.api = pair.get("paths.api");
         this.auth = pair.get("paths.auth");
         this.login = pair.get("paths.login");
+        this.word = pair.get("paths.word");
         pair.clear();
     }
 
@@ -73,6 +77,12 @@ public class JwtCsrfFilter extends OncePerRequestFilter {
             } catch (Exception e) {
                 resolver.resolveException(request, response, null, new MissingCsrfTokenException(csrfToken.getToken()));
             }
+        } else if (request.getServletPath().equals(this.api + this.word)) {
+            try {
+                filterChain.doFilter(request, response);
+            } catch (Exception e) {
+                resolver.resolveException(request, response, null, new MissingCsrfTokenException(csrfToken.getToken()));
+            }
         } else {
             String actualToken = request.getHeader(csrfToken.getHeaderName());
             if (actualToken == null) {
@@ -87,7 +97,7 @@ public class JwtCsrfFilter extends OncePerRequestFilter {
                     filterChain.doFilter(request, response);
                 } else {
                     /* если убрать configure(WebSecurity web) метод в SpringSecurityConfig
-                    * тогда тут будет ловиться исключение при попытки посетить публичные адреса без аутентификации */
+                     * тогда тут будет ловиться исключение при попытки посетить публичные адреса без аутентификации */
                     resolver.resolveException(request, response, null, new InvalidCsrfTokenException(csrfToken, actualToken));
                 }
             } catch (JwtException e) {
