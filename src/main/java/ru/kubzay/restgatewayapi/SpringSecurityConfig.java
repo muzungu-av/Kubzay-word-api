@@ -34,6 +34,9 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
     @Value("${paths.login}")
     String login;
 
+    @Value("${paths.word}")
+    String word;
+
     private UserService service;
 
     private JwtTokenRepository jwtTokenRepository;
@@ -69,6 +72,7 @@ public class SpringSecurityConfig extends WebSecurityConfigurerAdapter {
                 // раскоментировать для включения полноценной (не по токену) авторизации, однако токен по-прежнему будет необходим
 //                .antMatchers( "/private/**").fullyAuthenticated()
                 .antMatchers(api + auth + login).authenticated()
+                .antMatchers(api + word).authenticated()
                 .and()
                 .httpBasic()
                 .authenticationEntryPoint(((request, response, e) -> resolver.resolveException(request, response, null, e)));
